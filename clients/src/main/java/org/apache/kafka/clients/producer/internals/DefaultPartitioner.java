@@ -29,6 +29,10 @@ import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.utils.Utils;
 
 /**
+ * 默认分区策略
+ * 如果一个分区在记录中被指定，则使用它
+ * 如果分区没有被指定，但key使用hash选择一个分区
+ * 如果分区没有被指定，或者key用round-robin fashion选择一个分区
  * The default partitioning strategy:
  * <ul>
  * <li>If a partition is specified in the record, use it
@@ -43,30 +47,33 @@ public class DefaultPartitioner implements Partitioner {
 
     /**
      * Compute the partition for the given record.
-     *
-     * @param topic The topic name
-     * @param key The key to partition on (or null if no key)
-     * @param keyBytes serialized key to partition on (or null if no key)
-     * @param value The value to partition on or null
-     * @param valueBytes serialized value to partition on or null
-     * @param cluster The current cluster metadata
+     * 在记录中指定分区
+     * @param topic The topic name   指定话题
+     * @param key The key to partition on (or null if no key)分区的key
+     * @param keyBytes serialized key to partition on (or null if no key) 序列化 key
+     * @param value The value to partition on or null 分区的值
+     * @param valueBytes serialized value to partition on or null  // 序列化 value
+     * @param cluster The current cluster metadata  当前集群的元数据
      */
     public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
+        // 获取话题的所有分区
         List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
+        // 分区数量
         int numPartitions = partitions.size();
-        if (keyBytes == null) {
-            int nextValue = nextValue(topic);
+        if (keyBytes == null) { // 没有指定key
+            int nextValue = nextValue(topic); // 获取指定的下个值
+            // 获取剩下分区
             List<PartitionInfo> availablePartitions = cluster.availablePartitionsForTopic(topic);
-            if (availablePartitions.size() > 0) {
-                int part = Utils.toPositive(nextValue) % availablePartitions.size();
-                return availablePartitions.get(part).partition();
+            if (availablePartitions.size() > 0) { // 存在分区
+                int part = Utils.toPositive(nextValue) % availablePartitions.size(); // 计算取模
+                return availablePartitions.get(part).partition(); // 返回分区
             } else {
                 // no partitions are available, give a non-available partition
-                return Utils.toPositive(nextValue) % numPartitions;
+                return Utils.toPositive(nextValue) % numPartitions;  // 分区取模
             }
         } else {
             // hash the keyBytes to choose a partition
-            return Utils.toPositive(Utils.murmur2(keyBytes)) % numPartitions;
+            return Utils.toPositive(Utils.murmur2(keyBytes)) % numPartitions; // 根据murmur2取模返回分区
         }
     }
 

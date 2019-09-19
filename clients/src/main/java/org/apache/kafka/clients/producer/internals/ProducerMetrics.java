@@ -25,6 +25,7 @@ import org.apache.kafka.common.MetricNameTemplate;
 import org.apache.kafka.common.metrics.MetricConfig;
 import org.apache.kafka.common.metrics.Metrics;
 
+// 生成者指标
 public class ProducerMetrics {
 
     public final SenderMetricsRegistry senderMetrics;

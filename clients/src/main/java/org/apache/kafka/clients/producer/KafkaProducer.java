@@ -227,6 +227,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * <code>UnsupportedVersionException</code> when invoking an API that is not available in the running broker version.
  * </p>
  */
+// Kafka生产者
 public class KafkaProducer<K, V> implements Producer<K, V> {
 
     private final Logger log;
@@ -266,6 +267,7 @@ public class KafkaProducer<K, V> implements Producer<K, V> {
      * @param configs   The producer configs
      *
      */
+    // 传入配置的构造函数
     public KafkaProducer(final Map<String, Object> configs) {
         this(configs, null, null, null, null, null, Time.SYSTEM);
     }

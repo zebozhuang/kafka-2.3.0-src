@@ -24,6 +24,7 @@ import org.apache.kafka.common.requests.ProduceResponse;
 /**
  * The metadata for a record that has been acknowledged by the server
  */
+// 记录元数据
 public final class RecordMetadata {
 
     /**

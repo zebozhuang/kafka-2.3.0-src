@@ -22,6 +22,7 @@ import org.apache.kafka.common.KafkaException;
  * This exception is thrown if the producer is in non-blocking mode and the rate of data production exceeds the rate at
  * which data can be sent for long enough for the allocated buffer to be exhausted.
  */
+// BuffExhausedException 异常
 public class BufferExhaustedException extends KafkaException {
 
     private static final long serialVersionUID = 1L;

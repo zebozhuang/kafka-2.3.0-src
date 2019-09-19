@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
  * @see KafkaProducer
  * @see MockProducer
  */
+// 生产者，被KafkaProducer继承
 public interface Producer<K, V> extends Closeable {
 
     /**

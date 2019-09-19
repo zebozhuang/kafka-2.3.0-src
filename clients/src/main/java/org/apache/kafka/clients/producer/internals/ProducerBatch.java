@@ -52,6 +52,7 @@ import static org.apache.kafka.common.record.RecordBatch.NO_TIMESTAMP;
  *
  * This class is not thread safe and external synchronization must be used when modifying it
  */
+// 将会被发送的批量记录
 public final class ProducerBatch {
 
     private static final Logger log = LoggerFactory.getLogger(ProducerBatch.class);
@@ -76,10 +77,12 @@ public final class ProducerBatch {
     private boolean retry;
     private boolean reopened;
 
+    // 话题分区、记录、时间
     public ProducerBatch(TopicPartition tp, MemoryRecordsBuilder recordsBuilder, long createdMs) {
         this(tp, recordsBuilder, createdMs, false);
     }
 
+    // 话题分区、记录、时间、分批
     public ProducerBatch(TopicPartition tp, MemoryRecordsBuilder recordsBuilder, long createdMs, boolean isSplitBatch) {
         this.createdMs = createdMs;
         this.lastAttemptMs = createdMs;
@@ -99,6 +102,7 @@ public final class ProducerBatch {
      *
      * @return The RecordSend corresponding to this record or null if there isn't sufficient room.
      */
+    // 添加记录到当前记录集合，并返回相对位置
     public FutureRecordMetadata tryAppend(long timestamp, byte[] key, byte[] value, Header[] headers, Callback callback, long now) {
         if (!recordsBuilder.hasRoomFor(timestamp, key, value, headers)) {
             return null;
@@ -124,6 +128,7 @@ public final class ProducerBatch {
      * This method is only used by {@link #split(int)} when splitting a large batch to smaller ones.
      * @return true if the record has been successfully appended, false otherwise.
      */
+    // 添加记录到记录集合，并分批发送
     private boolean tryAppendForSplit(long timestamp, ByteBuffer key, ByteBuffer value, Header[] headers, Thunk thunk) {
         if (!recordsBuilder.hasRoomFor(timestamp, key, value, headers)) {
             return false;
@@ -150,6 +155,7 @@ public final class ProducerBatch {
      *
      * @param exception The exception to use to complete the future and awaiting callbacks.
      */
+    // 暴露异常
     public void abort(RuntimeException exception) {
         if (!finalState.compareAndSet(null, FinalState.ABORTED))
             throw new IllegalStateException("Batch has already been completed in final state " + finalState.get());
@@ -161,6 +167,7 @@ public final class ProducerBatch {
     /**
      * Return `true` if {@link #done(long, long, RuntimeException)} has been invoked at least once, `false` otherwise.
      */
+    /*如成功，返回true*/
     public boolean isDone() {
         return finalState() != null;
     }
@@ -183,6 +190,7 @@ public final class ProducerBatch {
      * @param exception The exception that occurred (or null if the request was successful)
      * @return true if the batch was completed successfully and false if the batch was previously aborted
      */
+    // 最后批量状态
     public boolean done(long baseOffset, long logAppendTime, RuntimeException exception) {
         final FinalState tryFinalState = (exception == null) ? FinalState.SUCCEEDED : FinalState.FAILED;
 

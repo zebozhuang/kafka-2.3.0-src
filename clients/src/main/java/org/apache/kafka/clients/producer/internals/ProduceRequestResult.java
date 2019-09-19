@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
  * A class that models the future completion of a produce request for a single partition. There is one of these per
  * partition in a produce request and it is shared by all the {@link RecordMetadata} instances that are batched together
  * for the same partition in the request.
+ * 生产者请求结果
  */
 public class ProduceRequestResult {
 
@@ -71,6 +72,7 @@ public class ProduceRequestResult {
 
     /**
      * Await the completion of this request
+     * 等待请求完成
      */
     public void await() throws InterruptedException {
         latch.await();
@@ -81,6 +83,7 @@ public class ProduceRequestResult {
      * @param timeout The maximum time to wait
      * @param unit The unit for the max time
      * @return true if the request completed, false if we timed out
+     * 等待请求完成，添加超时完成
      */
     public boolean await(long timeout, TimeUnit unit) throws InterruptedException {
         return latch.await(timeout, unit);

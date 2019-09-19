@@ -46,6 +46,7 @@ import java.util.Objects;
  * In either of the cases above, the timestamp that has actually been used will be returned to user in
  * {@link RecordMetadata}
  */
+// 生产者记录
 public class ProducerRecord<K, V> {
 
     private final String topic;

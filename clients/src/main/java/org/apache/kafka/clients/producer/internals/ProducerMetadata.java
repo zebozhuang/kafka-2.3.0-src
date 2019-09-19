@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+/*
+* 生产者元数据
+* */
 public class ProducerMetadata extends Metadata {
     private static final long TOPIC_EXPIRY_NEEDS_UPDATE = -1L;
     static final long TOPIC_EXPIRY_MS = 5 * 60 * 1000;

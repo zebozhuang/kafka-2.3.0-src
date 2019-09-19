@@ -29,6 +29,7 @@ import java.util.Map;
  *
  * NOTE: This class is intended for INTERNAL usage only within Kafka.
  */
+// API版本
 public class ApiVersions {
 
     private final Map<String, NodeApiVersions> nodeApiVersions = new HashMap<>();
